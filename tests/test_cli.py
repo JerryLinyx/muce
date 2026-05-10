@@ -90,6 +90,7 @@ def test_quant_backtest_validate_reads_qfq_signal_and_raw_execution(tmp_path, mo
     cache = ParquetCache(tmp_path)
     cache.write(make_bars("000001.SZ", adjust="qfq", rows=30))
     cache.write(make_bars("000001.SZ", adjust="raw", rows=30))
+    reports_dir = tmp_path / "reports"
     monkeypatch.setattr(
         sys,
         "argv",
@@ -102,6 +103,8 @@ def test_quant_backtest_validate_reads_qfq_signal_and_raw_execution(tmp_path, mo
             "000001.SZ",
             "--strategy",
             "sma-cross",
+            "--reports-dir",
+            str(reports_dir),
         ],
     )
     backtest_main()
@@ -112,6 +115,101 @@ def test_quant_backtest_validate_reads_qfq_signal_and_raw_execution(tmp_path, mo
     assert payload["strategy"] == "sma-cross"
     assert payload["metrics"]["start_cash"] == 1_000_000
     assert payload["equity_rows"] == 30
+
+
+def test_quant_backtest_validate_writes_report(tmp_path, monkeypatch, capsys) -> None:
+    cache = ParquetCache(tmp_path)
+    cache.write(make_bars("000001.SZ", adjust="qfq", rows=30))
+    cache.write(make_bars("000001.SZ", adjust="raw", rows=30))
+    reports_dir = tmp_path / "reports"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "quant-backtest",
+            "--cache-root",
+            str(tmp_path),
+            "validate",
+            "--symbols",
+            "000001.SZ",
+            "--strategy",
+            "sma-cross",
+            "--reports-dir",
+            str(reports_dir),
+        ],
+    )
+    backtest_main()
+    capsys.readouterr()  # discard
+    val_dir = reports_dir / "validations"
+    assert val_dir.exists()
+    runs = [p for p in val_dir.iterdir() if p.is_dir()]
+    assert len(runs) == 1
+    assert (runs[0] / "manifest.json").exists()
+    assert (runs[0] / "equity.parquet").exists()
+    assert (runs[0] / "trades.parquet").exists()
+    assert (runs[0] / "config.json").exists()
+
+
+def test_quant_backtest_validate_no_report_flag_skips_write(tmp_path, monkeypatch, capsys) -> None:
+    cache = ParquetCache(tmp_path)
+    cache.write(make_bars("000001.SZ", adjust="qfq", rows=30))
+    cache.write(make_bars("000001.SZ", adjust="raw", rows=30))
+    reports_dir = tmp_path / "reports"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "quant-backtest",
+            "--cache-root",
+            str(tmp_path),
+            "validate",
+            "--symbols",
+            "000001.SZ",
+            "--strategy",
+            "sma-cross",
+            "--no-report",
+            "--reports-dir",
+            str(reports_dir),
+        ],
+    )
+    backtest_main()
+    capsys.readouterr()
+    assert not reports_dir.exists()
+
+
+def test_quant_backtest_sweep_writes_report(tmp_path, monkeypatch, capsys) -> None:
+    cache = ParquetCache(tmp_path)
+    cache.write(make_bars("000001.SZ", adjust="qfq", rows=30))
+    cache.write(make_bars("000001.SZ", adjust="raw", rows=30))
+    reports_dir = tmp_path / "reports"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "quant-backtest",
+            "--cache-root",
+            str(tmp_path),
+            "sweep",
+            "--symbols",
+            "000001.SZ",
+            "--strategy",
+            "sma-cross",
+            "--fast-periods",
+            "5",
+            "--slow-periods",
+            "20",
+            "--reports-dir",
+            str(reports_dir),
+        ],
+    )
+    backtest_main()
+    capsys.readouterr()
+    sweeps_dir = reports_dir / "sweeps"
+    assert sweeps_dir.exists()
+    runs = [p for p in sweeps_dir.iterdir() if p.is_dir()]
+    assert len(runs) == 1
+    assert (runs[0] / "manifest.json").exists()
+    assert (runs[0] / "results.parquet").exists()
 
 
 class FakeProvider:

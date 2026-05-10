@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import time
 from pathlib import Path
 
 from quant_backtest.backtest import (
@@ -17,6 +18,7 @@ from quant_backtest.backtest import (
 )
 from quant_backtest.data.cache import ParquetCache
 from quant_backtest.data.constants import SOURCE_BAOSTOCK
+from quant_backtest.reports.store import write_report
 
 
 def main() -> None:
@@ -55,6 +57,10 @@ def main() -> None:
     sweep.add_argument("--max-position-percent", type=float, default=1.0)
     sweep.add_argument("--rank-by", default="total_return")
     sweep.add_argument("--top", type=int, default=20)
+    sweep.add_argument("--no-report", action="store_true",
+                       help="Do not write the run to reports/sweeps/")
+    sweep.add_argument("--reports-dir", default="reports",
+                       help="Directory under which to write run artifacts")
 
     validate = subparsers.add_parser("validate")
     _add_common_args(validate)
@@ -78,6 +84,10 @@ def main() -> None:
     validate.add_argument("--target-percent", type=float, default=0.95)
     validate.add_argument("--hold-bars", type=int, default=1)
     validate.add_argument("--signal-count", type=int, default=3)
+    validate.add_argument("--no-report", action="store_true",
+                          help="Do not write the run to reports/validations/")
+    validate.add_argument("--reports-dir", default="reports",
+                          help="Directory under which to write run artifacts")
 
     args = parser.parse_args()
     cache = ParquetCache(Path(args.cache_root))
@@ -102,7 +112,9 @@ def main() -> None:
                 "max_position_percent": _normalize_percent(args.max_position_percent),
             },
         )
+        started = time.perf_counter()
         result = VectorbtEngine(cache).sweep(config, _sweep_grid(args))
+        elapsed = time.perf_counter() - started
         ranked = result.ranked(args.rank_by).head(args.top)
         print(
             json.dumps(
@@ -118,6 +130,24 @@ def main() -> None:
                 indent=2,
             )
         )
+        if not args.no_report:
+            close = result.close
+            data_start, data_end = _index_date_range(close, args.start, args.end)
+            write_report(
+                kind="sweep",
+                config=_sweep_config_dict(args),
+                manifest_extra={
+                    "elapsed_seconds": elapsed,
+                    "data_range": {"start": data_start, "end": data_end},
+                    "symbols": list(symbols),
+                    "strategy": args.strategy,
+                    "grid_size": int(len(result.metrics)),
+                    "rank_by": args.rank_by,
+                    "top_combos": ranked.head(5).to_dict(orient="records"),
+                },
+                artifacts={"results": result.metrics},
+                base_dir=Path(args.reports_dir),
+            )
         return
 
     if args.command == "validate":
@@ -134,7 +164,9 @@ def main() -> None:
             execution_timing=args.execution_timing,
             strategy_kwargs=_strategy_kwargs(args),
         )
+        started = time.perf_counter()
         result = BacktraderEngine(cache).run(_strategy_class(args.strategy), config)
+        elapsed = time.perf_counter() - started
         print(
             json.dumps(
                 {
@@ -151,6 +183,24 @@ def main() -> None:
                 indent=2,
             )
         )
+        if not args.no_report:
+            equity_df = result.equity_curve
+            data_start, data_end = _frame_date_range(equity_df, args.start, args.end)
+            write_report(
+                kind="validate",
+                config=_validate_config_dict(args),
+                manifest_extra={
+                    "elapsed_seconds": elapsed,
+                    "data_range": {"start": data_start, "end": data_end},
+                    "symbols": list(symbols),
+                    "strategy": args.strategy,
+                    "signal_adjust": args.signal_adjust,
+                    "execution_adjust": args.execution_adjust,
+                    "summary_metrics": dict(result.metrics),
+                },
+                artifacts={"equity": equity_df, "trades": result.trades, "orders": result.orders},
+                base_dir=Path(args.reports_dir),
+            )
 
 
 def _add_common_args(parser: argparse.ArgumentParser) -> None:
@@ -262,6 +312,42 @@ def _normalize_percent(number: float) -> float:
     if abs(number) > 1:
         return number / 100
     return number
+
+
+_REPORT_EXCLUDE_KEYS = {"command", "cache_root", "no_report", "reports_dir"}
+
+
+def _frame_date_range(df, fallback_start: str | None, fallback_end: str | None) -> tuple[str, str]:
+    import pandas as pd
+    if df is None or df.empty:
+        return (fallback_start or "", fallback_end or "")
+    if "date" in df.columns:
+        ser = pd.to_datetime(df["date"], errors="coerce").dropna()
+        if not ser.empty:
+            return (ser.min().date().isoformat(), ser.max().date().isoformat())
+    return _index_date_range(df, fallback_start, fallback_end)
+
+
+def _index_date_range(df, fallback_start: str | None, fallback_end: str | None) -> tuple[str, str]:
+    import pandas as pd
+    if df is None or df.empty:
+        return (fallback_start or "", fallback_end or "")
+    if isinstance(df.index, pd.DatetimeIndex):
+        return (df.index.min().date().isoformat(), df.index.max().date().isoformat())
+    return (fallback_start or "", fallback_end or "")
+
+
+def _sweep_config_dict(args: argparse.Namespace) -> dict:
+    payload = {
+        key: value
+        for key, value in vars(args).items()
+        if key not in _REPORT_EXCLUDE_KEYS
+    }
+    return payload
+
+
+def _validate_config_dict(args: argparse.Namespace) -> dict:
+    return _sweep_config_dict(args)
 
 
 def _strategy_class(name: str):

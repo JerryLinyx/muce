@@ -48,7 +48,7 @@ data/factors/
 data/runs/
 
 # Run artifacts — recreate via diagnostic / backtest commands
-reports/
+/reports/
 
 # Jupyter
 .ipynb_checkpoints/
