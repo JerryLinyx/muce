@@ -62,3 +62,6 @@ data/runs/
 
 # Local AI tool configs (OpenCode, Cursor, etc.)
 opencode.json
+.opencode/
+.cursor/
+.claude/local/
