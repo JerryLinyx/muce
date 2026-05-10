@@ -43,6 +43,8 @@ A-share multi-factor quantitative research and backtesting toolkit documentation
 ### Design
 
 - [Brainstorm: Trading Method Modules](superpowers/brainstorm/trading-method-modules.md)
+- [Spec: FastAPI Read-Only Backend](superpowers/specs/2026-05-10-fastapi-readonly-backend-design.md)
+- [Plan: FastAPI Read-Only Backend](superpowers/plans/2026-05-10-fastapi-readonly-backend.md)
 
 ### Change Log
 
