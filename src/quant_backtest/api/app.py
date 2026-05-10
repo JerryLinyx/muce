@@ -8,8 +8,10 @@ from pathlib import Path
 from fastapi import FastAPI
 
 from quant_backtest.api.errors import install_error_handlers
+from quant_backtest.api.jobs import JobRegistry
 from quant_backtest.api.routers import data as data_router
 from quant_backtest.api.routers import reports as reports_router
+from quant_backtest.api.routers import selection as selection_router
 from quant_backtest.api.routers import system as system_router
 from quant_backtest.data.cache import ParquetCache
 
@@ -27,11 +29,13 @@ def create_app(
     app = FastAPI(title="Muce API", version="0.1.0")
     app.state.cache = ParquetCache(cache_root_path)
     app.state.reports_dir = reports_dir_path
+    app.state.job_registry = JobRegistry(ttl_seconds=3600)
 
     install_error_handlers(app)
     app.include_router(system_router.router, prefix="/api")
     app.include_router(data_router.router, prefix="/api")
     app.include_router(reports_router.router, prefix="/api/reports")
+    app.include_router(selection_router.router, prefix="/api/selection")
     return app
 
 
