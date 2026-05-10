@@ -9,7 +9,7 @@ A-share research / backtesting toolkit (Python, `uv`-managed). Code in `src/`，
 | Skill | 路径 | 何时触发 |
 |---|---|---|
 | `neat-freak` | [.claude/skills/neat-freak/SKILL.md](.claude/skills/neat-freak/SKILL.md) | 会话收尾、文档/记忆同步、用户说"整理一下 / 同步一下 / 收尾 / tidy up / sync up / 这个阶段做完了 / 新人能直接上手"等 |
-| `devlog-maintainer` | （全局 skill，通过 `Skill` 工具加载） | bug 修复/需求交付/review 验证/版本封存后，维护 `docs/devlog/` 下的 records/current/appendix/archive/CHANGELOG |
+| `devlog-maintainer` | [.claude/skills/devlog-maintainer/SKILL.md](.claude/skills/devlog-maintainer/SKILL.md) | bug 修复/需求交付/review 验证/版本封存后，维护 `docs/devlog/` 下的 records/current/appendix/archive/CHANGELOG |
 
 加载方式：直接 `Read` 对应 SKILL.md（项目本地 skill 不能用 `Skill` 工具调用），全局 skill 用 `Skill` 工具加载，按其中流程执行。
 

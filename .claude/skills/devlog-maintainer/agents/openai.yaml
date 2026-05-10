@@ -1,0 +1,4 @@
+interface:
+  display_name: "Devlog Maintainer"
+  short_description: "Maintain project devlog state and ADR traceability."
+  default_prompt: "Use $devlog-maintainer to update the project devlog after a bug fix, feature delivery, review, or version closeout."
