@@ -60,6 +60,44 @@ uv run quant-backtest sweep \
 
 VectorBT defaults to integer share granularity (`--size-granularity 1`) so research sweeps stay close to Backtrader validation semantics.
 
+## Run the read-only API
+
+Install the API extra:
+
+```bash
+uv sync --extra api
+```
+
+Start the server:
+
+```bash
+uv run quant-api
+# or, with auto-reload:
+MUCE_API_RELOAD=1 uv run quant-api
+```
+
+Browse interactive docs at http://127.0.0.1:8000/docs. The API is read-only;
+backtest sweeps and validations stay in the CLI and produce report artifacts
+the API serves back.
+
+Endpoints:
+
+- `GET  /api/health`, `/api/version`
+- `GET  /api/symbols`, `/api/symbols/{symbol}` — symbol search and basic info
+- `GET  /api/bars/{symbol}` — K-line + optional indicators (`?indicators=ma_20,rsi_14`)
+- `GET  /api/cache/coverage` — full-market cache coverage
+- `GET  /api/selection/factors`, `/api/selection/defaults` — factor metadata
+- `POST /api/selection/jobs` — start a selection (returns `{job_id}`)
+- `GET  /api/selection/jobs/{id}` — poll status (`pending` / `running` / `done` / `failed`)
+- `GET  /api/selection/jobs/{id}/stream` — Server-Sent Events progress + result
+- `GET  /api/reports`, `/api/reports/{id}` — list / detail of CLI-produced reports
+- `GET  /api/reports/{id}/equity|trades|sweep` — per-artifact JSON
+
+`quant-backtest sweep` and `quant-backtest validate` write reports to
+`reports/sweeps/{run_id}/` and `reports/validations/{run_id}/` by default.
+Pass `--no-report` to skip on-disk output, or `--reports-dir <path>` to
+redirect.
+
 ## License
 
 This project is released under the **GNU General Public License v3.0 or later** (GPL-3.0-or-later). See [LICENSE](LICENSE) for the full text.

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import asdict, dataclass
 from datetime import date
 from typing import Callable
@@ -18,6 +20,33 @@ from quant_backtest.selection import (
 from quant_backtest.selection.factors import FACTOR_COLUMNS
 
 ProgressCallback = Callable[[str, float, str], None]
+
+_RESULT_CACHE: dict[str, "SelectionResult"] = {}
+
+
+def _cache_key(
+    *,
+    config: FactorSelectorConfig,
+    as_of_date: date | str | None,
+    symbols: list[str] | None,
+    source: str,
+    adjust: str,
+) -> str:
+    payload = {
+        "config": _config_to_dict(config),
+        "as_of_date": str(as_of_date) if as_of_date is not None else None,
+        "symbols": sorted(symbols) if symbols else None,
+        "source": source,
+        "adjust": adjust,
+    }
+    blob = json.dumps(payload, sort_keys=True, default=str).encode("utf-8")
+    return hashlib.sha256(blob).hexdigest()
+
+
+def clear_cache() -> None:
+    """Reset the in-process result cache (intended for tests)."""
+
+    _RESULT_CACHE.clear()
 
 
 @dataclass(frozen=True)
@@ -43,6 +72,18 @@ def run_selection(
     on_progress: ProgressCallback | None = None,
 ) -> SelectionResult:
     progress = on_progress or _noop
+
+    key = _cache_key(
+        config=config,
+        as_of_date=as_of_date,
+        symbols=symbols,
+        source=source,
+        adjust=adjust,
+    )
+    cached = _RESULT_CACHE.get(key)
+    if cached is not None:
+        progress("done", 1.0, "命中缓存")
+        return cached
 
     progress("load_panel", 0.10, "加载缓存面板...")
     universe = list(symbols) if symbols else cache.available_symbols(source=source, adjust=adjust)
@@ -87,12 +128,14 @@ def run_selection(
     }
     progress("done", 1.0, "完成")
 
-    return SelectionResult(
+    result = SelectionResult(
         as_of_date=str(pd.Timestamp(as_of_ts).date()),
         config=_config_to_dict(config),
         candidates=candidates,
         summary=summary,
     )
+    _RESULT_CACHE[key] = result
+    return result
 
 
 def _config_to_dict(config: FactorSelectorConfig) -> dict:

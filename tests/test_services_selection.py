@@ -42,6 +42,7 @@ def test_run_selection_respects_symbols(populated_cache):
 
 
 def test_run_selection_emits_progress(populated_cache):
+    selection_service.clear_cache()
     events: list[tuple[str, float, str]] = []
     config = FactorSelectorConfig(min_score=0, top_n=5)
     selection_service.run_selection(
@@ -54,3 +55,22 @@ def test_run_selection_emits_progress(populated_cache):
     stages = [stage for stage, _, _ in events]
     assert stages == ["load_panel", "compute_indicators", "score", "filter_rank", "done"]
     assert events[-1][1] == 1.0
+
+
+def test_run_selection_caches_repeated_calls(populated_cache):
+    selection_service.clear_cache()
+    config = FactorSelectorConfig(min_score=0, top_n=5)
+    a = selection_service.run_selection(
+        cache=populated_cache, config=config, as_of_date=None, symbols=["000001.SZ"],
+    )
+    calls: list[tuple[str, float, str]] = []
+    b = selection_service.run_selection(
+        cache=populated_cache,
+        config=config,
+        as_of_date=None,
+        symbols=["000001.SZ"],
+        on_progress=lambda stage, progress, msg: calls.append((stage, progress, msg)),
+    )
+    assert a.candidates == b.candidates
+    stages = [stage for stage, _, _ in calls]
+    assert stages == ["done"]
