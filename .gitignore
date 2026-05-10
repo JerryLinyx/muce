@@ -1,0 +1,60 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+build/
+dist/
+.installed.cfg
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# uv
+.python-version
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Local data — recreate via `quant-data download`
+data/cache/
+data/features/
+data/factors/
+data/runs/
+
+# Run artifacts — recreate via diagnostic / backtest commands
+reports/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Claude / agent local configs (keep settings out of repo unless deliberately committed)
+.claude/local/

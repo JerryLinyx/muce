@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "muce"
+version = "0.1.0"
+description = "Muce (牧策) — multi-factor A-share research and backtesting toolkit with dual-engine validation"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+dependencies = [
+    "pandas>=2.2",
+    "pyarrow>=15",
+]
+
+[project.optional-dependencies]
+data = ["baostock>=0.8.9"]
+indicators = ["ta-lib>=0.6.8"]
+query = ["duckdb>=1.2"]
+research = ["vectorbt>=0.28"]
+validation = ["backtrader>=1.9.78"]
+test = [
+    "pytest>=8",
+    "backtrader>=1.9.78",
+    "vectorbt>=0.28",
+]
+all = [
+    "baostock>=0.8.9",
+    "duckdb>=1.2",
+    "ta-lib>=0.6.8",
+    "vectorbt>=0.28",
+    "backtrader>=1.9.78",
+    "pytest>=8",
+]
+
+[project.scripts]
+quant-data = "quant_backtest.cli_data:main"
+quant-backtest = "quant_backtest.cli_backtest:main"
+quant-select = "quant_backtest.cli_selection:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/quant_backtest"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"
