@@ -99,6 +99,17 @@ Endpoints:
 Pass `--no-report` to skip on-disk output, or `--reports-dir <path>` to
 redirect.
 
+Environment variables:
+
+| Var | Default | Purpose |
+|---|---|---|
+| `MUCE_API_HOST` | `127.0.0.1` | Bind address |
+| `MUCE_API_PORT` | `8000` | Bind port |
+| `MUCE_API_RELOAD` | unset | Set to truthy to enable Uvicorn auto-reload |
+| `MUCE_CACHE_ROOT` | `data/cache/a_share/daily` | Parquet cache root |
+| `MUCE_REPORTS_DIR` | `reports` | Where the API looks for run artifacts |
+| `MUCE_API_CORS_ORIGINS` | `localhost:3000,127.0.0.1:3000,localhost:5173,127.0.0.1:5173` (all `http://`) | Comma-separated whitelist for CORS preflight; override when serving the frontend from a different origin |
+
 ## License
 
 This project is released under the **GNU General Public License v3.0 or later** (GPL-3.0-or-later). See [LICENSE](LICENSE) for the full text.

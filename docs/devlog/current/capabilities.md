@@ -85,6 +85,7 @@
 - RFC 7807 error envelope
 - In-process JobRegistry (TTL 1h)
 - Reports served from disk artifacts (manifest.json + parquet)
+- CORS preflight allowed for `localhost:3000` (Next.js) and `localhost:5173` (Vite) by default; override via `MUCE_API_CORS_ORIGINS` env var
 
 ## Reports
 

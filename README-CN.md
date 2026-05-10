@@ -21,6 +21,8 @@
 - ✅ **命中率验证**：因子归因与分层扫描命令
 - ✅ **VectorBT 引擎**：基于缓存 A 股面板的快速参数扫描
 - ✅ **Backtrader 引擎**：保守的事件驱动验证
+- ✅ **只读 API**：FastAPI 服务，覆盖标的 / 选股（含 SSE 进度）/ 回测报告三组路由（详见 [ADR-009](docs/devlog/records/ADR-009_2026-05-10_fastapi-readonly-backend.md)）
+- ✅ **回测产物落盘**：`reports/sweeps/{run_id}/` 与 `reports/validations/{run_id}/`，含 manifest + parquet + git 溯源
 - ✅ **文档体系**：devlog、ADR、backlog、guides、brainstorm
 
 ### 进行中
@@ -117,6 +119,23 @@ uv run quant-backtest sweep \
   --signal-counts 2,3,4 \
   --rank-by total_return
 ```
+
+回测命令默认会把 manifest + parquet 落到 `reports/`。加 `--no-report` 跳过，或 `--reports-dir <path>` 改写位置。
+
+### 启动只读 API
+
+```bash
+uv sync --extra api
+uv run quant-api          # 默认监听 127.0.0.1:8000
+```
+
+浏览器打开 `http://127.0.0.1:8000/docs` 即可看到 OpenAPI 文档。三组核心路由：
+
+- `/api/symbols`、`/api/bars/{symbol}`、`/api/cache/coverage`：标的看板
+- `/api/selection/{factors,defaults,jobs,jobs/{id},jobs/{id}/stream}`：选股（异步任务 + SSE 进度）
+- `/api/reports`、`/api/reports/{id}/{equity,trades,sweep}`：回测报告
+
+环境变量：`MUCE_API_HOST`、`MUCE_API_PORT`、`MUCE_API_RELOAD`、`MUCE_CACHE_ROOT`、`MUCE_REPORTS_DIR`、`MUCE_API_CORS_ORIGINS`（前端 CORS 白名单，默认放行 `localhost:3000` 与 `localhost:5173`）。
 
 ### 选股命令
 

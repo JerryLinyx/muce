@@ -41,6 +41,11 @@ Muce was CLI-only. A web frontend was planned. We needed an HTTP layer that:
    adjust)`. A repeat call with the same parameters skips the panel read /
    indicator computation and emits a single `done` progress event with
    message "命中缓存".
+6. Whitelist local frontend dev origins (`localhost:3000` Next.js,
+   `localhost:5173` Vite, both `http://` and `127.0.0.1` forms) for CORS
+   preflight by default. Override with `MUCE_API_CORS_ORIGINS` env var or
+   `create_app(cors_origins=[...])`. Disallowed origins receive a 400 on
+   preflight.
 
 ## Implementation
 
@@ -56,8 +61,9 @@ Muce was CLI-only. A web frontend was planned. We needed an HTTP layer that:
 - Result cache by config hash; repeat calls skip panel read and emit "命中缓存"
 - CLI `quant-backtest sweep` and `quant-backtest validate` now write reports by default; `--no-report` to opt out
 - `pyproject.toml`: `api` extra = `fastapi`, `uvicorn[standard]`, `sse-starlette`, `httpx`
-- 23 new tests across `test_services_data`, `test_services_selection`, `test_reports_store`, `test_api_*`
-- Full suite: 101 passed, 4 skipped
+- CORS middleware in `api/app.py` reads default whitelist from `_DEFAULT_CORS_ORIGINS` constant; runtime override via `MUCE_API_CORS_ORIGINS=<comma-separated>`
+- 27 new tests across `test_services_data`, `test_services_selection`, `test_reports_store`, `test_api_*` (4 of them cover CORS allow / block / env override)
+- Full suite: 107 passed, 3 skipped
 
 ## Consequences
 

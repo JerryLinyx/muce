@@ -10,7 +10,8 @@ All notable changes to this project will be recorded here. Follows devlog topolo
 - Job-based selection with SSE progress streaming
 - Report artifact format: manifest.json + parquet under reports/sweeps/ and reports/validations/
 - CLI sweep/validate write reports by default
-- 23 new tests, total 101 passed (+42 from previous baseline)
+- CORS whitelist for local frontend dev (localhost:3000, :5173); override via `MUCE_API_CORS_ORIGINS`
+- 27 new tests, total 107 passed (+48 from previous baseline)
 
 ### 2026-05-09 — Validation Gap Diagnostics
 - Implemented simulator vs Backtrader comparison tool
