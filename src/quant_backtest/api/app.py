@@ -9,6 +9,7 @@ from fastapi import FastAPI
 
 from quant_backtest.api.errors import install_error_handlers
 from quant_backtest.api.routers import data as data_router
+from quant_backtest.api.routers import reports as reports_router
 from quant_backtest.api.routers import system as system_router
 from quant_backtest.data.cache import ParquetCache
 
@@ -30,6 +31,7 @@ def create_app(
     install_error_handlers(app)
     app.include_router(system_router.router, prefix="/api")
     app.include_router(data_router.router, prefix="/api")
+    app.include_router(reports_router.router, prefix="/api/reports")
     return app
 
 
