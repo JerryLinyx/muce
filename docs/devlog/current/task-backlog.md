@@ -314,21 +314,6 @@ Possible direction:
 - Add ADRs for durable architectural choices.
 - Move stable usage docs into `guides/`.
 
-## Licensing And Distribution
-
-Status: ✅ baseline in place.
-
-- Project license: `GPL-3.0-or-later` (chosen because of `backtrader` copyleft propagation).
-- `LICENSE` file at repository root contains the official GPL-3.0 text.
-- `pyproject.toml` declares license metadata via PEP 639.
-- `README.md` documents permitted use and the constraints from `vectorbt` (free tier) Commons Clause.
-
-Permitted today: personal research, self-directed live trading, academic work, free open-source distribution under GPL-3.0, internal organizational use.
-
-Blocked today: paid product / hosted SaaS / fee-based consulting offering while depending on `vectorbt` (free tier) — Commons Clause forbids it. Closed-source binary or commercial fork while depending on `backtrader` — GPL-3.0 forbids it.
-
-If commercial use ever becomes a goal, replace `vectorbt` (free tier) with `vectorbt PRO` / `bt` / `zipline-reloaded` / custom engine, and either keep the project GPL-compatible or replace `backtrader`. This decision must not be made silently.
-
 ## Deferred — Earlier Frontend Plan
 
 The earlier 14-item frontend plan (Vite + React + TS + Tailwind + shadcn/ui + FastAPI + filesystem RunStore) was scoped before the priority refresh. It is **not abandoned**. It is now deferred to P3-2 (Dashboard) as one of three candidate implementations:
