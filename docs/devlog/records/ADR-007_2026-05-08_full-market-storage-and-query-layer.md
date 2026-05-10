@@ -1,3 +1,11 @@
+---
+id: ADR-007
+kind: decision
+title: Full-Market Storage And Query Layer
+date: 2026-05-08
+status: accepted
+---
+
 # ADR 0007: Full-Market Storage And Query Layer
 
 ## Status
@@ -42,21 +50,20 @@ DuckDB is used to query those Parquet files directly. It does not own the data a
 
 ## Implementation
 
-Added:
+One-year full-market download result:
+- 5200 symbols, 2,506,102 rows (1,253,051 qfq + 1,253,051 raw), 245MB cache
+- `quant-data universe` — list A-share symbols from baostock
+- `quant-data download --all-symbols --adjust both --batch-size 100` — batch download
+- `quant-data update --all-symbols --adjust both` — incremental update
+- Universe symbols filtered to common stock code ranges (SH: 600/601/603/605/688/689, SZ: 000/001/002/003/300/301)
 
-```text
-src/quant_backtest/data/duckdb_reader.py
-tests/test_duckdb_reader.py
-```
+DuckDB reader: `DuckDBReader.daily_bars()` and `DuckDBReader.inspect()` over partitioned Parquet. Tests skipped when `query` extra is not installed.
 
-The reader provides:
-
-```python
-DuckDBReader.daily_bars(...)
-DuckDBReader.inspect(...)
-```
-
-Tests are skipped when the optional `query` extra is not installed.
+Data quality inspection:
+- Missing OHLCV: 0
+- Duplicates: 0
+- Suspended rows: 2405
+- ST rows: 41339
 
 ## Consequences
 

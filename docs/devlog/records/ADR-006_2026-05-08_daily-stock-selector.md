@@ -1,3 +1,11 @@
+---
+id: ADR-006
+kind: decision
+title: Daily Stock Selector
+date: 2026-05-08
+status: accepted
+---
+
 # ADR 0006: Daily Stock Selector
 
 ## Status
@@ -72,7 +80,7 @@ volume_breakout:
   volume >= volume MA * configured multiplier
 
 boll_breakout:
-  close crosses above Bollinger upper band
+  close crosses above upper Bollinger band
 ```
 
 ## Rationale
@@ -81,6 +89,18 @@ boll_breakout:
 - The selector can later be reused by Backtrader, VectorBT, or a live/paper trading layer.
 - qfq signal and raw execution semantics remain consistent with the existing backtest system.
 - The first scoring model is deliberately simple so later factor weighting and IC analysis can be added without hiding assumptions.
+
+## Implementation
+
+- Factor table computation via `build_factor_table()` with per-symbol technical indicators
+- Candidate ranking by `factor_score desc, amount desc, volume desc, symbol asc`
+- Tradability filters: suspended and ST exclusion by default
+- `entry_lag_days=1` default to avoid same-day-close look-ahead bias
+- CLI: `quant-select candidates`, `quant-select backtest`
+- Full-market smoke test: 9414 candidates, -0.52% return with simple equal-weight scoring
+- Key finding: `min_score=4` produces ~68 candidates/day before Top-N truncation
+- `tests/test_selection.py`: 19 tests passed
+- TA-Lib oracle: `src/quant_backtest/features/talib_oracle.py` for optional cross-checking
 
 ## Consequences
 

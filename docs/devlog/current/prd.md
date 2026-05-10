@@ -1,4 +1,4 @@
-# Quant System Maturity Gap Roadmap
+# Quant System Maturity Gap Roadmap (PRD)
 
 ## Status
 
@@ -6,38 +6,11 @@ Active requirements document.
 
 This document compares the current project with mature quant trading platforms such as PTrade and portfolio/trade management terminals. It defines the functional gaps, priority order, and delivery standards for future development.
 
-## Context
-
-The current project is a local A-share quant research and backtesting system. It already supports daily A-share data caching, technical indicators, full-market stock selection, VectorBT-style sweeps, and Backtrader validation.
-
 Mature platforms are broader systems. PTrade-style platforms combine research, backtesting, simulation, live trading, scheduling, data access, order events, transaction events, risk control, and broker-side execution. Portfolio/trade management terminals additionally emphasize portfolio accounting, multi-strategy operation, OMS/PMS workflows, monitoring, audit, and reporting.
 
 Therefore, the next phase should not focus only on adding more trading ideas. The project needs a stronger engineering foundation so that strategy results are reproducible, explainable, testable, and eventually executable.
 
-## Current Baseline
-
-Implemented:
-
-- A-share daily data cache with `qfq` signal prices and `raw` execution prices.
-- Baostock-based daily data provider; one-year full-market cache (5200 symbols, qfq + raw).
-- Local Parquet cache by source, adjustment mode, and symbol.
-- Optional DuckDB query layer over Parquet.
-- Technical indicator layer for common daily indicators.
-- Full-market daily selector with multi-factor scoring, hard `require_factors` / `exclude_factors` filters, and Top-N ranking.
-- Hit-rate, factor attribution, and layered sweep commands.
-- VectorBT research path for fast sweeps.
-- Backtrader validation path for conservative event-driven checks.
-- Selector-specific Backtrader validation (`quant-select validate-backtrader`).
-- Simulator vs Backtrader divergence diagnostic (`quant-select diagnose-validation-gap`, current artifacts at `reports/validation-gap/...-v6/`).
-- Basic execution assumptions: commission, slippage, lot sizing, limit-up buy rejection, limit-down sell rejection, max positions, target allocation, surge-extra slippage.
-- Documentation system: devlog, ADRs, backlog, guides, brainstorm, requirements.
-- Project license: GPL-3.0-or-later, with `LICENSE` and `README.md` Third-Party Licenses section.
-
-Major limitation:
-
-- The system is still a research MVP. It is not yet a reliable live-trading system, portfolio management system, or production-grade backtest engine.
-
-## Engineering Principles For Every Requirement
+## Engineering Principles
 
 Every item below must be implemented according to these rules:
 
@@ -77,9 +50,9 @@ Priority definitions:
 
 ### P0-1: Diagnose Simulator Versus Backtrader Differences
 
-Status:
+Status: ✅ Done.
 
-- ✅ Diagnostic tool implemented and iterated through six revisions.
+- Diagnostic tool implemented and iterated through six revisions.
 - First full-market report at `reports/validation-gap/selector-rsi70-boll15-next-open/` and latest at `...-v6/`.
 - Findings recorded in `docs/devlog/2026-05-09-validation-gap-diagnostics.md`.
 - Backtrader validation now preserves selector candidate order, uses lot-size sizing, records `entry_bar` on completed fills, exits via explicit close orders, and no longer rejects next-open entries when the signal-day close is limit-up.
@@ -169,7 +142,7 @@ Acceptance criteria:
 
 ### P0-4: Unified Portfolio, Broker, Order, And Fill Model
 
-Status: blocking item — should land before P0-2/P0-3/P0-5 if possible, otherwise their schemas will need rework.
+Status: **Active** — blocking item, should land before P0-2/P0-3/P0-5.
 
 Problem:
 

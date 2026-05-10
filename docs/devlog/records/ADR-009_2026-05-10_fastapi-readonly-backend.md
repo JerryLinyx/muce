@@ -1,3 +1,11 @@
+---
+id: ADR-009
+kind: decision
+title: FastAPI Read-Only Backend
+date: 2026-05-10
+status: accepted
+---
+
 # ADR 0009: FastAPI Read-Only Backend
 
 ## Status
@@ -33,6 +41,23 @@ Muce was CLI-only. A web frontend was planned. We needed an HTTP layer that:
    adjust)`. A repeat call with the same parameters skips the panel read /
    indicator computation and emits a single `done` progress event with
    message "命中缓存".
+
+## Implementation
+
+- `services/data_service.py` — symbol search, K-line + indicators, coverage
+- `services/selection_service.py` — `run_selection()` with `on_progress` callback and result cache
+- `services/reports_service.py` — thin wrapper around `reports.store`
+- `reports/schema.py` — `ReportManifest`, `SweepManifest`, `ValidateManifest`
+- `reports/store.py` — `write_report`, `list_reports`, `load_report`, `load_artifact`; artifacts under `reports/sweeps/{run_id}/` and `reports/validations/{run_id}/`
+- `api/app.py` — FastAPI with `create_app()` factory, RFC 7807 error envelope, DI for cache + reports dir
+- 4 routers: `routers/system.py`, `routers/data.py`, `routers/reports.py`, `routers/selection.py`
+- `JobRegistry` with SSE progress stream and 1h TTL, no persistence
+- Background work via `threading.Thread` (not asyncio — TestClient cancels per-request loops)
+- Result cache by config hash; repeat calls skip panel read and emit "命中缓存"
+- CLI `quant-backtest sweep` and `quant-backtest validate` now write reports by default; `--no-report` to opt out
+- `pyproject.toml`: `api` extra = `fastapi`, `uvicorn[standard]`, `sse-starlette`, `httpx`
+- 23 new tests across `test_services_data`, `test_services_selection`, `test_reports_store`, `test_api_*`
+- Full suite: 101 passed, 4 skipped
 
 ## Consequences
 

@@ -1,8 +1,26 @@
+---
+id: ADR-008
+kind: decision
+title: Selector Hit-Rate Validation And Diagnostics
+date: 2026-05-09
+status: accepted
+---
+
 # ADR 0008: Selector Hit-Rate Validation
 
 ## Status
 
 Accepted
+
+## Implementation
+
+- Hit-rate module: `hit_rate.py`, `attribution.py` — separate factor directionality from portfolio construction
+- Strict filters: `require_factors` / `exclude_factors` for hard factor inclusion/exclusion
+- Execution-aware simulation: `execution.py` with lot size, limit-up/down, surge slippage, position limits
+- Sweep-simulate: layered parameter grids (hold days, target percent, max positions, top-N) with factor threshold layers (rsi_threshold, boll_std, volume_multiplier)
+- Backtrader selector validation: `backtrader_validation.py` with precomputed signal dates, close-confirmed take-profit
+- Layered sweeps: factor parameters swept alongside execution parameters in one pipeline
+- CLI: `quant-select hit-rate`, `quant-select attribution`, `quant-select simulate`, `quant-select sweep-simulate`, `quant-select validate-backtrader`
 
 ## Context
 

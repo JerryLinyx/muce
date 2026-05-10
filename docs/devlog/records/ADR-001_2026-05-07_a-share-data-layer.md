@@ -1,3 +1,11 @@
+---
+id: ADR-001
+kind: decision
+title: A-share Data Layer
+date: 2026-05-07
+status: accepted
+---
+
 # ADR 0001: A-share Data Layer
 
 ## Status
@@ -77,6 +85,18 @@ Provider abstraction is necessary, but a generic `get_data()` interface would be
 get_daily_bars(symbols, start, end, adjust)
 ```
 
+## Implementation
+
+- `MarketDataProvider` protocol
+- `BaostockProvider.get_daily_bars()` — first implemented provider
+- `AkshareProvider` and `TushareProvider` stubs with `NotImplementedError`
+- `to_internal_symbol()` / `to_vendor_symbol()` — `000001.SZ` ↔ `sz.000001`
+- `ParquetCache` partitioned by `source/adjust/symbol` under `data/cache/a_share/daily/`
+- Data quality validation: missing OHLCV, duplicates, date gaps
+- vectorbt adapter for wide-panel loads
+- backtrader adapter for per-symbol feeds
+- CLI: `quant-data download`, `quant-data update`, `quant-data inspect`
+
 ## Consequences
 
 Positive:
@@ -99,3 +119,7 @@ Tradeoffs:
 - Add `AkshareProvider` only after clear field and adjustment mapping tests exist.
 - Add `TushareProvider` only after token, permission, and rate-limit behavior is configured.
 - Add integration tests for real baostock downloads behind an optional marker.
+
+## Verification
+
+`uv run pytest` — 19 passed (after backtrader module).

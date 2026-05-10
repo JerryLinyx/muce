@@ -1,51 +1,6 @@
-# Current Backlog
+# Task Backlog
 
-This backlog records known problems, future requirements, and possible solution directions. Items here are not commitments; they are preserved so design context is not lost.
-
-## Priority Roadmap
-
-The active maturity-gap requirements are maintained in:
-
-- [Quant System Maturity Gap Roadmap](../requirements/maturity-gap-roadmap.md)
-- [Brainstorm: Trading Method Modules](../brainstorm/trading-method-modules.md)
-
-Current priority order (synced with `requirements/maturity-gap-roadmap.md`):
-
-P0 — Backtest trustworthiness:
-
-1. P0-1 Diagnose simulator versus Backtrader differences. ✅ v6 landed; remaining gap is sizing.
-2. P0-2 Add realistic next-open sizing to the simulator so it sizes from signal-day close, not the future open.
-3. P0-3 Add strategy-level skipped-candidate logging with a canonical rejection category set.
-4. P0-4 Introduce a unified Portfolio / Broker / Order / Fill model. **Blocking — sequence first.**
-5. P0-5 Implement an A-share market rules engine on top of the unified model.
-6. P0-6 Persist feature and factor tables for faster full-market sweeps. *(Can run in parallel.)*
-
-P1 — Serious research:
-
-7. P1-1 Expand full-market data to multi-year coverage. *(Can start any time — overnight download.)*
-8. P1-2 Add factor evaluation: IC, RankIC, quantile returns, decay, turnover, exposure.
-9. P1-3 Add walk-forward and out-of-sample validation.
-10. P1-4 Adopt canonical run artifact layout under `reports/<command>/<run_id>/`.
-
-P2 — Closer to real trading:
-
-11. P2-1 Add minute-data validation for tail-close execution.
-12. P2-2 Build paper trading architecture.
-13. P2-3 Add a centralized risk-control layer (hook reserved by P0-4).
-
-P3 — Experience and extension:
-
-14. P3-1 Add a unified `quant-pipeline` command.
-15. P3-2 Research Dashboard / report UI. *(Replaces the earlier standalone Vite+React+FastAPI frontend plan, which is preserved as one of three implementation candidates.)*
-16. P3-3 Optional MCP server wrapper around the existing CLI.
-
-Recommended execution order across P0:
-
-```
-P0-4 (foundation) → P0-5 → P0-2 → P0-3 → P0-6 (parallel)
-```
-
-P0-4 ships before the other P0 items because they all need a stable Order / Portfolio / Broker schema.
+This file tracks unresolved issues and possible solution directions. The active maturity-gap requirements are maintained in [prd.md](prd.md).
 
 ## Data Layer
 

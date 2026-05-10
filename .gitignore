@@ -56,5 +56,9 @@ data/runs/
 # Logs
 *.log
 
-# Claude / agent local configs (keep settings out of repo unless deliberately committed)
-.claude/local/
+# Claude / agent local configs
+.claude/settings.local.json
+.claude/worktrees/
+
+# Local AI tool configs (OpenCode, Cursor, etc.)
+opencode.json

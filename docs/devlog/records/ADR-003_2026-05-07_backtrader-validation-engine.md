@@ -1,3 +1,11 @@
+---
+id: ADR-003
+kind: decision
+title: Backtrader Validation Engine
+date: 2026-05-07
+status: accepted
+---
+
 # ADR 0003: Backtrader Validation Engine
 
 ## Status
@@ -41,6 +49,22 @@ Using raw prices for indicators would create discontinuities around dividends, s
 The feed therefore carries both price views. Strategies can compute features on `signal_close` and submit orders against the broker using raw execution OHLC.
 
 `next_open` is the default execution timing because it avoids the common mistake of computing a signal with the current close and filling at the same close. `same_close` remains available for strategies that can legitimately generate signals before the close.
+
+## Implementation
+
+- `BacktraderConfig`, `BacktraderResult`, `BacktraderEngine`
+- `ASharePandasData` feed with raw execution lines + qfq signal lines
+- `SignalSmaCrossStrategy` built-in example
+- `get_three_rising_hold_one_day_strategy_class()` — first MVP strategy
+- Analyzers for equity curve, order log, trade log, and normalized metrics
+- CLI: `quant-backtest validate` with `--strategy`, `--signal-adjust`, `--execution-adjust`, `--execution-timing`, `--target-percent`, `--hold-bars`
+- `AShareCommissionScheme` and `AShareSlippageScheme` for cost modeling
+
+Three-rising-factor MVP test on 603986.SH (2025-05-07 to 2026-05-07):
+- final_value: 947,948.03 (-5.21% return)
+- max_drawdown: 10.89%
+- 20 closed trades, 40.0% win rate
+- Unit test verifies: three qfq bullish candles trigger entry, buy fills on third day raw close, sell fills on next day raw close
 
 ## Consequences
 

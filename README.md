@@ -13,6 +13,7 @@ A-share data layer for research backtesting:
 - VectorBT research engine for fast parameter sweeps over cached A-share panels.
 
 Detailed design and development notes live in [docs/README.md](docs/README.md).
+中文 README：[README-CN.md](README-CN.md)。进度跟踪：[docs/devlog/current/prd.md](docs/devlog/current/prd.md)。
 
 Install with uv:
 

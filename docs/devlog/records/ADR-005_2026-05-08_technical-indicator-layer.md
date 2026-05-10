@@ -1,3 +1,11 @@
+---
+id: ADR-005
+kind: decision
+title: Technical Indicator Layer
+date: 2026-05-08
+status: accepted
+---
+
 # ADR 0005: Technical Indicator Layer
 
 ## Status
@@ -64,6 +72,20 @@ BOLL: rolling mean plus/minus num_std * population std, ddof=0
 ATR: Wilder-style smoothing of true range via ewm(alpha=1/window, adjust=False)
 OBV: cumulative signed volume based on close-to-close direction
 ```
+
+## Implementation
+
+- `src/quant_backtest/features/indicators.py` — pandas-only first implementation
+- Unified `add_technical_indicators()` entry point with per-symbol grouping
+- Implemented: MA, EMA, MACD, KDJ, RSI, Bollinger Bands, ATR, Volume MA, OBV
+- 6 unit tests in `tests/test_indicators.py` covering outputs, per-symbol isolation, feature-only mode
+
+Cross-source check against VectorBT on cached 603986.SH qfq daily bars:
+- MA/EMA/BOLL match to fp tolerance (max_abs_diff ~= 2e-11)
+- MACD matches with ewm=True only (default VectorBT MACD uses different smoothing)
+- RSI/ATR differ from VectorBT defaults — formula-locked by internal tests
+
+Optional TA-Lib oracle in `src/quant_backtest/features/talib_oracle.py` for future cross-checking.
 
 ## Consequences
 

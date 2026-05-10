@@ -1,3 +1,11 @@
+---
+id: ADR-002
+kind: decision
+title: Dual Backtesting Backends
+date: 2026-05-07
+status: accepted
+---
+
 # ADR 0002: Dual Backtesting Backends
 
 ## Status
@@ -36,6 +44,14 @@ The engines have different natural data shapes:
 - backtrader prefers per-symbol feeds with OHLCV lines.
 
 Forcing a single shape across both would make the implementation harder to reason about. The project therefore uses adapters rather than a universal DataFrame.
+
+## Implementation
+
+- `vectorbt` for fast parameter sweeps and signal research
+- `backtrader` for event-driven validation with order-level logs
+- Separate adapters: wide panels for VectorBT, per-symbol feeds for Backtrader
+- qfq data for signals, raw data for execution in both engines
+- Both engines are optional extras, not mandatory dependencies
 
 ## Consequences
 

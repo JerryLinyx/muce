@@ -33,10 +33,10 @@ Update docs when any of these change:
 
 Use this rule:
 
-- Development session summary: update `docs/devlog/`.
-- Durable architecture decision: add or update `docs/adr/`.
-- Known future work: update `docs/backlog/current.md`.
-- Stable usage or workflow: update `docs/guides/`.
+- Development session summary: update `docs/devlog/records/` and `docs/devlog/current/`.
+- Durable architecture decision: add or update `docs/devlog/records/`.
+- Known future work: update `docs/devlog/current/task-backlog.md`.
+- Stable usage or workflow: update `docs/devlog/appendix/`.
 - Very short project overview: update root `README.md`.
 
 ## ADR Template
