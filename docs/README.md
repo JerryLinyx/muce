@@ -9,8 +9,7 @@ A-share multi-factor quantitative research and backtesting toolkit documentation
 - `devlog/appendix/`: stable reference docs — usage guides, templates, model contracts.
 - `devlog/archive/`: frozen version snapshots (for version closeout).
 - `devlog/CHANGELOG.md`: release-facing change summary.
-- `brainstorm/`: structured idea maps and module candidates before they become implementation requirements.
-- `superpowers/`: implementation specs and plans (for significant feature development).
+- `superpowers/`: design-stage documents — brainstorm ideas, formal specs, and implementation plans.
 
 ## Current Documentation
 
@@ -41,9 +40,9 @@ A-share multi-factor quantitative research and backtesting toolkit documentation
 - [Documentation Process](devlog/appendix/documentation-process.md)
 - [ADR Template](devlog/appendix/templates/adr-template.md)
 
-### Plans & Brainstorming
+### Design
 
-- [Brainstorm: Trading Method Modules](brainstorm/trading-method-modules.md)
+- [Brainstorm: Trading Method Modules](superpowers/brainstorm/trading-method-modules.md)
 
 ### Change Log
 
