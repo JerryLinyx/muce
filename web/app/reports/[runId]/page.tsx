@@ -2,11 +2,13 @@
 
 import { use } from 'react'
 import Link from 'next/link'
-import { useReportDetail, useReportEquity, useReportTrades } from '@/lib/queries'
+import { useReportDetail, useReportEquity, useReportTrades, useReportSweep } from '@/lib/queries'
 import { StatGrid, type Stat } from '@/components/reports/StatGrid'
 import { TradesTable } from '@/components/reports/TradesTable'
 import { EquityChart } from '@/components/chart/EquityChart'
 import { MetaPanel } from '@/components/reports/MetaPanel'
+import { TopCombosCard } from '@/components/reports/TopCombosCard'
+import { SweepResultsTable } from '@/components/reports/SweepResultsTable'
 import { ErrorBanner } from '@/components/feedback/ErrorBanner'
 import { Skeleton } from '@/components/feedback/Skeleton'
 
@@ -30,7 +32,7 @@ export default function ReportDetailPage({ params }: { params: Promise<{ runId: 
       </div>
 
       {kind === 'validate' ? <ValidateBranch runId={runId} manifest={m} /> : null}
-      {kind === 'sweep' ? <SweepBranchPlaceholder /> : null}
+      {kind === 'sweep' ? <SweepBranch runId={runId} manifest={m} /> : null}
 
       <MetaPanel manifest={m} />
     </div>
@@ -66,6 +68,22 @@ function ValidateBranch({ runId, manifest }: { runId: string; manifest: Record<s
   )
 }
 
-function SweepBranchPlaceholder() {
-  return <div className="text-ink-soft text-sm">(Sweep 详情见 Milestone E)</div>
+function SweepBranch({ runId, manifest }: { runId: string; manifest: Record<string, unknown> }) {
+  const sweep = useReportSweep(runId)
+  const rankBy = (manifest.rank_by as string) ?? 'total_return'
+  const topCombos = (manifest.top_combos as Record<string, unknown>[]) ?? []
+  return (
+    <>
+      <div className="text-md text-ink-soft">
+        策略:{String(manifest.strategy ?? '—')} · rank_by:{rankBy} · grid_size:{String(manifest.grid_size ?? '—')}
+      </div>
+      <TopCombosCard combos={topCombos} rankBy={rankBy} />
+      <div>
+        <div className="text-md font-medium mb-2">全部组合</div>
+        {sweep.isLoading ? <Skeleton className="h-40 w-full" /> :
+          sweep.data ? <SweepResultsTable rows={sweep.data.rows as Record<string, unknown>[]} defaultSort={rankBy} /> :
+          null}
+      </div>
+    </>
+  )
 }
