@@ -22,7 +22,8 @@ v0.1.0 — active development, not yet versioned for release.
 - Simulator vs Backtrader divergence diagnostics (gap reduced from 36% to 28%)
 - FastAPI read-only API (data, selection, reports)
 - Report artifact format: manifest.json + parquet under reports/sweeps/ and reports/validations/
-- Test suite: 107 passed, 3 skipped
+- Test suite: 107 passed, 3 skipped (backend); 21 passed (frontend Vitest)
+- Next.js web frontend (`web/`) with three pages: dashboard, selection, reports
 
 ## Current P0 Priorities
 

@@ -12,3 +12,4 @@
 | [ADR-008](ADR-008_2026-05-09_selector-hit-rate-validation.md) | 2026-05-09 | Selector Hit-Rate Validation | decision | accepted |
 | [ADR-009](ADR-009_2026-05-10_fastapi-readonly-backend.md) | 2026-05-10 | FastAPI Read-Only Backend | decision | accepted |
 | [ADR-010](ADR-010_2026-05-07_three-falling-buy-strategy.md) | 2026-05-07 | Three-Falling Buy Strategy | review | accepted |
+| [ADR-011](ADR-011_2026-05-11_web-frontend-stack.md) | 2026-05-11 | Web Frontend Stack — Next.js + TanStack Query + lightweight-charts | decision | accepted |

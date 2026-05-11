@@ -25,6 +25,7 @@ A-share multi-factor quantitative research and backtesting toolkit documentation
 - [ADR-008: Selector Hit-Rate Validation](devlog/records/ADR-008_2026-05-09_selector-hit-rate-validation.md)
 - [ADR-009: FastAPI Read-Only Backend](devlog/records/ADR-009_2026-05-10_fastapi-readonly-backend.md)
 - [ADR-010: Three-Falling Buy Strategy](devlog/records/ADR-010_2026-05-07_three-falling-buy-strategy.md)
+- [ADR-011: Web Frontend Stack](devlog/records/ADR-011_2026-05-11_web-frontend-stack.md)
 - [Records Index](devlog/records/README.md)
 
 ### Current State
@@ -45,6 +46,8 @@ A-share multi-factor quantitative research and backtesting toolkit documentation
 - [Brainstorm: Trading Method Modules](superpowers/brainstorm/trading-method-modules.md)
 - [Spec: FastAPI Read-Only Backend](superpowers/specs/2026-05-10-fastapi-readonly-backend-design.md)
 - [Plan: FastAPI Read-Only Backend](superpowers/plans/2026-05-10-fastapi-readonly-backend.md)
+- [Spec: Web Frontend (v1)](superpowers/specs/2026-05-11-web-frontend-design.md)
+- [Plan: Web Frontend (v1)](superpowers/plans/2026-05-11-web-frontend.md)
 
 ### Change Log
 

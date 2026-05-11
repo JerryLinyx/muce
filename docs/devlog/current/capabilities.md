@@ -94,6 +94,17 @@
 - Equity, orders, trades as Parquet artifacts
 - CLI --no-report to opt out, --reports-dir to redirect
 
+## Web Frontend
+
+- Next.js 16 App Router single-page app in `web/`
+- Three pages: dashboard (K-line + indicators + last-10 OHLC), selection (factor config + SSE progress + candidates with CSV export), reports (list + validate detail / sweep detail)
+- TanStack Query v5 for data fetching with retry policy (4xx never, 5xx twice)
+- openapi-typescript auto-generates types from backend OpenAPI; hand-rolled `lib/api-types.ts` carries the concrete shapes
+- lightweight-charts for K-line and equity; ECharts deferred to v2
+- Reverse-proxy `/api/*` to FastAPI backend
+- Vitest unit suite for lib helpers and SSE hook state machine (21 tests)
+- Tailwind v4 + CSS variables; FinGOAT-derived tactile palette, 红涨绿跌
+
 ## Gaps
 
 - No unified Portfolio/Broker/Order/Fill model (P0-4)

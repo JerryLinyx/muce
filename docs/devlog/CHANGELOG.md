@@ -4,6 +4,15 @@ All notable changes to this project will be recorded here. Follows devlog topolo
 
 ## Unreleased (v0.1.0-dev)
 
+### 2026-05-11 — Web Frontend (v1)
+- Next.js 16 App Router + TypeScript app under `web/`
+- Three pages: 标的看板 / 选股(含 SSE 进度) / 回测报告
+- TanStack Query v5 + openapi-typescript for type-safe API client
+- lightweight-charts for K-line and equity curve
+- Tailwind v4 + CSS variables; FinGOAT-derived palette (低圆角、单一强调色、A股红涨绿跌)
+- Vitest unit tests for format / url-state / api / sse (21 tests)
+- Reverse-proxy `/api/*` to FastAPI via `next.config.ts`
+
 ### 2026-05-10 — FastAPI Read-Only Backend
 - Added services/ layer wrapping existing modules
 - FastAPI app with system, data, selection, reports routers
