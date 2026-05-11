@@ -65,3 +65,10 @@ opencode.json
 .opencode/
 .cursor/
 .claude/local/
+
+# Web frontend (Next.js)
+web/node_modules/
+web/.next/
+web/out/
+web/coverage/
+web/.turbo/
