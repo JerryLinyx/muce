@@ -181,6 +181,36 @@ muce/
 └── data/               # 本地缓存（Parquet）
 ```
 
+### 启动 Web 前端
+
+前端位于 `web/`，Next.js 16 App Router 单页应用。
+
+首次安装：
+
+```bash
+cd web
+npm install
+```
+
+同时启动后端和前端（两个终端）：
+
+```bash
+# 终端 1（仓库根）
+uv run quant-api
+
+# 终端 2（仓库根）
+cd web && npm run dev
+```
+
+浏览器打开 <http://localhost:3000>。前端通过 Next.js rewrites 把 `/api/*`
+反代到 `http://127.0.0.1:8000`。三个页面分别是看板、选股、报告。
+
+后端 schema 变更后重新生成前端类型：
+
+```bash
+cd web && npm run gen:api
+```
+
 ## 文档
 
 - [docs/README.md](docs/README.md) - 文档索引

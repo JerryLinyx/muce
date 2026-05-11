@@ -110,6 +110,38 @@ Environment variables:
 | `MUCE_REPORTS_DIR` | `reports` | Where the API looks for run artifacts |
 | `MUCE_API_CORS_ORIGINS` | `localhost:3000,127.0.0.1:3000,localhost:5173,127.0.0.1:5173` (all `http://`) | Comma-separated whitelist for CORS preflight; override when serving the frontend from a different origin |
 
+## Run the web frontend
+
+The frontend lives in `web/` and is a Next.js 16 App Router single-page app.
+
+Install once:
+
+```bash
+cd web
+npm install
+```
+
+Run both backend and frontend (two terminals):
+
+```bash
+# Terminal 1 (from repo root)
+uv run quant-api
+
+# Terminal 2 (from repo root)
+cd web && npm run dev
+```
+
+Open <http://localhost:3000>. The frontend reverse-proxies `/api/*` to the
+FastAPI backend at `http://127.0.0.1:8000`. Three pages — 看板 (dashboard),
+选股 (selection), 报告 (reports) — render data from the cache and the
+`reports/` directory produced by `quant-backtest sweep` / `validate`.
+
+Regenerate API types after any backend schema change:
+
+```bash
+cd web && npm run gen:api
+```
+
 ## License
 
 This project is released under the **GNU General Public License v3.0 or later** (GPL-3.0-or-later). See [LICENSE](LICENSE) for the full text.
