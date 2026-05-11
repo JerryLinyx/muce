@@ -1,7 +1,7 @@
 'use client'
 
+import { Suspense, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useMemo } from 'react'
 import { useBars } from '@/lib/queries'
 import { mergeSearch } from '@/lib/url-state'
 import { SymbolSelector } from '@/components/dashboard/SymbolSelector'
@@ -15,6 +15,14 @@ import { TableSkeleton } from '@/components/feedback/TableSkeleton'
 import { Skeleton } from '@/components/feedback/Skeleton'
 
 export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-ink-soft">加载中…</div>}>
+      <DashboardInner />
+    </Suspense>
+  )
+}
+
+function DashboardInner() {
   const router = useRouter()
   const sp = useSearchParams()
   const symbol = sp.get('symbol')

@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useReports } from '@/lib/queries'
 import { mergeSearch } from '@/lib/url-state'
@@ -15,6 +16,14 @@ const KINDS = [
 ] as const
 
 export default function ReportsPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-ink-soft">加载中…</div>}>
+      <ReportsInner />
+    </Suspense>
+  )
+}
+
+function ReportsInner() {
   const router = useRouter()
   const sp = useSearchParams()
   const kind = sp.get('kind') ?? ''
