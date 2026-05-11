@@ -1,0 +1,88 @@
+:root {
+  /* Neutrals */
+  --ink-black:      #1a1a14;
+  --ink-soft:       #5c5c56;
+  --ink-muted:      #8b8a85;
+
+  --canvas:         #f3f1ed;
+  --panel:          #ecebea;
+  --panel-strong:   #e0d6c5;
+  --surface-soft:   #e5e3db;
+
+  /* Chart surface — lighter than canvas for an immersive feel */
+  --chart-bg:       #fbfaf6;
+  --chart-grid:     rgba(26, 26, 20, 0.06);
+  --chart-axis:     rgba(26, 26, 20, 0.35);
+
+  /* Borders / shadows — restrained */
+  --border:         rgba(26, 26, 20, 0.08);
+  --border-strong:  rgba(26, 26, 20, 0.16);
+  --shadow-sm:      0 1px 2px rgba(26, 26, 20, 0.04);
+  --shadow-md:      0 4px 12px rgba(26, 26, 20, 0.06);
+
+  /* A-share convention: red up, green down */
+  --up:             #c14747;
+  --up-soft:        rgba(193, 71, 71, 0.12);
+  --down:           #4a7d52;
+  --down-soft:      rgba(74, 125, 82, 0.12);
+
+  /* Single accent */
+  --accent:         #6b7c5e;
+  --accent-soft:    rgba(107, 124, 94, 0.14);
+
+  --warn:           #c08a3a;
+  --error:          #cc4b4b;
+
+  /* Type */
+  --font-sans: 'Inter', -apple-system, system-ui, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  --fs-xs:    12px;
+  --fs-sm:    13px;
+  --fs-base:  14px;
+  --fs-md:    15px;
+  --fs-lg:    18px;
+  --fs-stat:  22px;
+
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+
+  /* Radius — low and disciplined */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+}
+
+html, body {
+  background: var(--canvas);
+  color: var(--ink-black);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+.chart-stage {
+  border-radius: 0;
+  border: none;
+  background: var(--chart-bg);
+  padding: 0;
+  min-height: 480px;
+  flex: 1;
+}
